@@ -1,0 +1,29 @@
+1.   Install elasicsearch and validate the elasticsearch service
+ 
+helm repo add elastic https://helm.elastic.co
+helm install elasticsearch elastic/elasticsearch -f ./values.yaml
+kubectl get pods -l app=elasticsearch-master -w
+helm test elasticsearch
+kubectl port-forward svc/elasticsearch-master 9200
+curl -XGET http://localhost:9200/
+
+
+        2.  Load data
+ 
+ 
+curl -H 'Content-Type: application/json' -XPOST "http://localhost:9200/cities/_bulk" --data-binary @worldcities_100records.json
+
+
+        3. Run Python programs to interact with elasticsearch
+
+a. To check the health of the elasticsearch cluster
+python3 es_health_local.py 
+
+b. To search a city 
+python3 es_search_local.py 
+
+c. To add a new city
+python3 es_insert_local.py 
+
+d. To update the population of an existing city
+python3 es_update_local.py 
